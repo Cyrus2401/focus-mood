@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Zenith Focus - Dashboard de concentration minimaliste cyber-zen. Organisez vos tâches et boostez votre focus avec des battements binauraux et un minuteur fluide.">
+    <title>Zenith Focus — Productivité Cyber-Zen</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Favicon (Fallback emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘</text></svg>">
+</head>
+<body>
+    
+    <!-- Background Ambient Gradients -->
+    <div class="ambient-glow glow-1" aria-hidden="true"></div>
+    <div class="ambient-glow glow-2" aria-hidden="true"></div>
+    
+    <div class="container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-group">
+                <span class="logo-icon" aria-hidden="true">
+                    <svg class="logo-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 22h20L12 2z" />
+                        <path d="M12 9l-6 10h12L12 9z" opacity="0.65" />
+                    </svg>
+                </span>
+                <h1 class="logo-text">ZENITH <span class="logo-sub">FOCUS</span></h1>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="dashboard-grid">
+            
+            <!-- LEFT COLUMN: FOCUS TIMER -->
+            <section class="card timer-card" aria-labelledby="timer-heading">
+                <h2 id="timer-heading" class="sr-only">Miniteur Pomodoro</h2>
+                
+                <div class="timer-mode-switcher">
+                    <button id="btn-mode-focus" class="mode-btn active" aria-current="true">Concentration</button>
+                    <button id="btn-mode-break" class="mode-btn">Pause</button>
+                </div>
+
+                <div class="timer-visual-container">
+                    <!-- SVG Progress Circle -->
+                    <svg class="progress-ring" width="280" height="280" viewBox="0 0 280 280">
+                        <circle class="progress-ring-bg" stroke="rgba(255, 255, 255, 0.05)" stroke-width="6" fill="transparent" r="120" cx="140" cy="140" />
+                        <circle id="progress-indicator" class="progress-ring-bar" stroke="var(--focus-pink)" stroke-width="6" stroke-linecap="round" fill="transparent" r="120" cx="140" cy="140" />
+                    </svg>
+                    
+                    <div class="timer-display">
+                        <span id="time-digits" class="time-text">25:00</span>
+                        <span id="time-state-label" class="time-sub">FOCUS</span>
+                    </div>
+                </div>
+
+                <div class="timer-controls">
+                    <button id="btn-timer-toggle" class="control-btn btn-primary" aria-label="Démarrer le minuteur">
+                        <span class="btn-icon">▶</span> <span class="btn-text">DÉMARRER</span>
+                    </button>
+                    <button id="btn-timer-reset" class="control-btn btn-secondary" aria-label="Réinitialiser le minuteur">
+                        Réinitialiser
+                    </button>
+                </div>
+            </section>
+
+            <!-- RIGHT COLUMN (TOP): AUDIO GENERATOR -->
+            <section class="card audio-card" aria-labelledby="audio-heading">
+                <header class="card-header">
+                    <h2 id="audio-heading" class="card-title">Générateur d'Ambiance</h2>
+                    <span class="card-subtitle">Battements binauraux pures</span>
+                </header>
+
+                <div class="audio-tracks-grid">
+                    <!-- Binaural Focus Track -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--color-primary); filter: drop-shadow(0 0 4px var(--color-primary-glow));">
+                                    <path d="M12 4.5a2.5 2.5 0 0 0-2.5-2.5C7.3 2 5.5 3.8 5.5 6a3 3 0 0 0 .5 1.5c-2 .5-3.5 2.3-3.5 4.5a4 4 0 0 0 1 2.6c-1.5 1-2 3-1 4.7 1 1.7 3 2.2 4.5 1.7.5 1.5 2 2.5 3.5 2.5a2.5 2.5 0 0 0 2.5-2.5V4.5z" />
+                                    <path d="M12 4.5a2.5 2.5 0 0 1 2.5-2.5c2.2 0 4 1.8 4 4a3 3 0 0 1-.5 1.5c2 .5 3.5 2.3 3.5 4.5a4 4 0 0 1-1 2.6c1.5 1 2 3 1 4.7-1 1.7-3 2.2-4.5 1.7-.5 1.5-2 2.5-3.5 2.5a2.5 2.5 0 0 1-2.5-2.5V4.5z" />
+                                    <path d="M8 8a2 2 0 0 1 2 2M16 8a2 2 0 0 0-2 2M7.5 13.5a2.5 2.5 0 0 1 2.5-2.5M16.5 13.5a2.5 2.5 0 0 0-2.5-2.5" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Ondes Gamma</span>
+                                <span class="track-desc">Concentration cognitive</span>
+                            </div>
+                        </div>
+                        <button id="btn-audio-gamma" class="audio-toggle-btn" aria-label="Jouer Ondes Gamma">Jouer</button>
+                    </div>
+
+                    <!-- Ambient Space Rain Track -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
+                                    <line x1="8" y1="19" x2="6" y2="22" />
+                                    <line x1="12" y1="19" x2="10" y2="22" />
+                                    <line x1="16" y1="19" x2="14" y2="22" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Space Rain</span>
+                                <span class="track-desc">Bruit rose modulé</span>
+                            </div>
+                        </div>
+                        <button id="btn-audio-rain" class="audio-toggle-btn" aria-label="Jouer Space Rain">Jouer</button>
+                    </div>
+                </div>
+
+                <!-- Global Volume -->
+                <div class="volume-control-wrapper">
+                    <label for="slider-volume" class="volume-label">
+                        <span>Volume</span>
+                        <span id="volume-val-display">50%</span>
+                    </label>
+                    <input type="range" id="slider-volume" min="0" max="100" value="50" class="volume-slider" aria-label="Contrôle du volume de l'ambiance">
+                </div>
+            </section>
+
+            <!-- RIGHT COLUMN (BOTTOM): TASK LIST -->
+            <section class="card tasks-card" aria-labelledby="tasks-heading">
+                <header class="card-header">
+                    <h2 id="tasks-heading" class="card-title">Zen Planner</h2>
+                    <span class="card-subtitle">Tâches prioritaires de la session</span>
+                </header>
+
+                <!-- Task Add Form -->
+                <form id="form-add-task" class="add-task-form" aria-label="Ajouter une tâche">
+                    <input type="text" id="input-task" placeholder="Définir un nouvel objectif..." required aria-label="Libellé de la nouvelle tâche" autocomplete="off">
+                    <button type="submit" class="add-btn" aria-label="Créer la tâche">＋</button>
+                </form>
+
+                <!-- Task List Container -->
+                <ul id="task-list-container" class="task-list" aria-label="Liste des tâches de concentration">
+                    <!-- Tasks will be injected dynamically -->
+                </ul>
+            </section>
+
+        </main>
+        
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <p class="footer-text">Zenith Focus — Esthétique Premium par Antigravity.</p>
+        </footer>
+    </div>
+
+    <!-- GSAP for Ultra Premium Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
+    <!-- Application Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "url": "http://localhost:3000",
+  "fonts": [
+    "Inter, sans-serif",
+    "Outfit, sans-serif",
+    "Arial"
+  ],
+  "spacing_errors": [],
+  "ai_slop_detected": [],
+  "screenshots": {
+    "desktop": "audit-results\\desktop.png",
+    "mobile": "audit-results\\mobile.png"
+  }
+}
