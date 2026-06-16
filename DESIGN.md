@@ -1,18 +1,18 @@
-# DESIGN.md — Zenith Focus Design System Specification
+# DESIGN.md — FocusMood Design System Specification
 
 > [!NOTE]
-> Ce document définit l'univers esthétique et sémantique de l'application **Zenith Focus**. 
+> Ce document définit l'univers esthétique et sémantique de l'application **FocusMood**. 
 > Il sert de guide absolu pour l'ensemble des intégrations CSS et JS.
 
 ---
 
 ## 1. Thème Visuel
 
-L'atmosphère générale est baptisée **"Cyber-Minimalist Zen"**. 
+L'atmosphère générale est baptisée **"Muted Technical focus"**. 
 Le but est de créer un espace de travail virtuel qui élimine toute distraction cérébrale tout en enveloppant l'utilisateur dans une esthétique sombre, géométrique et immersive.
 *   **Contrastes profonds** : Fonds extrêmement sombres rappelant le vide spatial.
 *   **Aura lumineuse** : Éclairages indirects et halos colorés subtils (gradients) pour focaliser l'attention.
-*   **Matérialité** : Panneaux "verre dépoli" (glassmorphism) flottants au-dessus de l'atmosphère pour une sensation de légèreté et d'ordre.
+*   **Matérialité** : Panneaux sombres mats avec bordures fines et typographie soignée.
 
 ---
 
@@ -20,10 +20,10 @@ Le but est de créer un espace de travail virtuel qui élimine toute distraction
 
 | Couleur | Code Hex | Nom du Rôle | Description & Usage |
 | :--- | :--- | :--- | :--- |
-| 🌌 | `#07050f` | **Zen Darkness** | Rôle sémantique: destruction (fond de secours). |
-| 🪟 | `#141026` | **Vitreous Abyss** | Rôle sémantique: fond neutre des panneaux vitrés. |
+| 🌌 | `#07050f` | **Zen Darkness** | Rôle sémantique: fond neutre principal. |
+| 🪟 | `#141026` | **Vitreous Abyss** | Rôle sémantique: fond des panneaux. |
 | 💖 | `#ff5b8f` | **Focus Pink** | Rôle sémantique: primaire (concentration active). |
-| 💚 | `#00f5d4` | **Flow Teal** | Rôle sémantique: secondaire / succès (repos de la session). |
+| 💚 | `#00f5d4` | **Flow Teal** | Rôle sémantique: secondaire (état de pause). |
 | 💛 | `#ffb800` | **Mind Amber** | Rôle sémantique: accent / attention (interactions). |
 | ⚪ | `#ffffff` | **Pure Light** | Rôle sémantique: texte principal, titres contrastés. |
 | 🩶 | `#8b899e` | **Cosmic Grey** | Rôle sémantique: texte secondaire et icônes inactives. |
@@ -43,9 +43,12 @@ Le but est de créer un espace de travail virtuel qui élimine toute distraction
 
 ## 4. Hiérarchie Typographique
 
-*   **Titre d'Affichage** : Outfit, 24px, poids 700.
-*   **Titre de Section** : Outfit, 16px, poids 600.
-*   **Corps de Texte** : Inter, 8px, poids 400.
+*   **Titre principal (H1)** : Outfit, 32px, poids 700.
+*   **Minuteur d'affichage (Display)** : Outfit, 64px, poids 700.
+*   **Titre de Section (H2)** : Outfit, 22px, poids 600.
+*   **Titre de Sous-Section (H3)** : Outfit, 18px, poids 600.
+*   **Corps de Texte (P)** : Inter, 14px, poids 400.
+*   **Petits Textes (Small)** : Inter, 12px, poids 400.
 
 ---
 
@@ -64,7 +67,7 @@ Toutes les dimensions d'espacement (marges, paddings, gaps) reposent strictement
 
 ### Variantes
 1. **Bouton Principal** - Utilisé pour démarrer ou interrompre la session de concentration.
-2. **Bouton Secondaire** - Dédié aux réinitialisations du système de chronométrage.
+2. **Bouton Secondaire** - Dédié aux réinitialisations et aux sélections rapides de temps.
 3. **Bouton Audio** - Dédié à la lecture et à l'arrêt des ondes sonores.
 
 ---
@@ -78,6 +81,14 @@ L'animation est le souffle vital de l'application. Elle doit se faire discrète 
 *   **Changement d'état (Timer Transition)** : Fondu enchaîné de couleur d'ambiance avec transition lente pour un effet enveloppant (durée de 300ms).
 
 Note d'accessibilité: Toutes les animations respectent la directive `@media (prefers-reduced-motion: reduce)` en désactivant les mouvements de translation et en basculant sur des fondus d'opacité instantanés.
+
+---
+
+## 8. Dark Mode
+
+L'application est configurée nativement en Dark Mode. Les styles de contraste respectent les normes WCAG AA.
+*   Fonds : `#07050f` (Zen Darkness)
+*   Surfaces de cartes : `#141026` (Vitreous Abyss) avec une opacité de 45% pour laisser filtrer subtilement l'ambiance lumineuse.
 
 ---
 

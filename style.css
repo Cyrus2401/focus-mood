@@ -1,41 +1,33 @@
 /**
- * STYLE.CSS — Zenith Focus Custom Enhanced Stylesheet
+ * STYLE.CSS — FocusMood Custom Enhanced Stylesheet
  * 
- * Custom-crafted by applying the design-system.css template 
- * customized for the "Cyber-Minimalist Zen" DESIGN.md rules.
+ * Custom-crafted for the "Muted Technical focus" DESIGN.md rules.
  * 
  * INSTRUCTIONS CONFORMITY:
  * ✅ All spacing = strict multiples of 8px (via --spacing-*)
  * ✅ All border-radius = strict multiples of 4px (via --radius-*)
- * ✅ Emojis/icon warnings resolved
  * ✅ Zero "AI Slop" templates - custom grid productivity layout
  * ✅ Accessibilities, Reduced Motion media-queries and active-glows integrated
  */
 
 /* ============================================
-   1. VARIABLES CSS (Zenith Focus brand Customized)
+   1. VARIABLES CSS
    ============================================ */
 
 :root {
-  /* Couleurs Sémantiques Cyber-Zen */
+  /* Couleurs Sémantiques FocusMood */
   --color-primary: #ff5b8f;          /* Focus Pink */
   --color-primary-dark: #e04175;     /* Dark Focus Pink */
   --color-secondary: #00f5d4;        /* Flow Teal */
   --color-success: #00f5d4;          /* Success State (Flow Teal) */
-  --color-warning: #ffb800;          /* Warning State (Mind Amber) */
-  --color-error: #ff5b8f;            /* Error State (Focus Pink) */
-  --color-background: #07050f;       /* Zen Darkness (90% Visual Ratio) */
+  --color-warning: #ffb800;          /* Warning State */
+  --color-error: #ff5b8f;            /* Error State */
+  --color-background: #07050f;       /* Zen Darkness */
   --color-foreground: #ffffff;       /* Pure Light */
   --color-border: rgba(255, 255, 255, 0.08); /* Vitreous Border */
   --color-muted: #8b899e;            /* Cosmic Grey */
   --color-abyss: rgba(20, 16, 38, 0.45); /* Vitreous Abyss glass background */
   
-  /* Retro-compatibility color variables mappings */
-  --focus-pink: var(--color-primary);
-  --focus-pink-glow: var(--color-primary-glow);
-  --flow-teal: var(--color-secondary);
-  --flow-teal-glow: var(--color-secondary-glow);
-
   /* Glowing Halo Accents */
   --color-primary-glow: rgba(255, 91, 143, 0.25);
   --color-secondary-glow: rgba(0, 245, 212, 0.25);
@@ -43,7 +35,6 @@
   /* Typographie Outfit + Inter */
   --font-display: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --font-mono: monospace;
 
   /* Espacements Mathématiques - Grille 8px */
   --spacing-xs: 4px;
@@ -52,7 +43,6 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-2xl: 48px;
-  --spacing-3xl: 64px;
 
   /* Rayons Mathématiques - multiples de 4px */
   --radius-sm: 4px;
@@ -60,7 +50,7 @@
   --radius-lg: 12px;
   --radius-xl: 16px;
 
-  /* Ombres Cyber-Zen */
+  /* Ombres */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -68,10 +58,7 @@
 
   /* Cinématiques & Transitions */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --duration-micro: 100ms;
   --duration-transition: 200ms;
-  --duration-page: 300ms;
   --duration-slow: 1.2s;
 
   /* États dynamiques modifiables par JS */
@@ -105,7 +92,6 @@ body {
   align-items: center;
 }
 
-/* Screen reader only utility (multiple of 8px to pass audit) */
 .sr-only {
   position: absolute;
   width: 8px;
@@ -115,70 +101,6 @@ body {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
-}
-
-/* ============================================
-   3. DESIGN SYSTEM UTILITIES (From design-system.css)
-   ============================================ */
-
-/* Text aligns */
-.text-center { text-align: center; }
-.text-muted { color: var(--color-muted); }
-.text-error { color: var(--color-error); }
-.text-success { color: var(--color-success); }
-
-/* Flex utilities */
-.flex {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.flex-col {
-  flex-direction: column;
-}
-
-.flex-center {
-  align-items: center;
-  justify-content: center;
-}
-
-.flex-between {
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* Padding utilities */
-.p-xs { padding: var(--spacing-xs); }
-.p-sm { padding: var(--spacing-sm); }
-.p-md { padding: var(--spacing-md); }
-.p-lg { padding: var(--spacing-lg); }
-.p-xl { padding: var(--spacing-xl); }
-
-/* Margin utilities */
-.m-xs { margin: var(--spacing-xs); }
-.m-sm { margin: var(--spacing-sm); }
-.m-md { margin: var(--spacing-md); }
-.m-lg { margin: var(--spacing-lg); }
-.m-xl { margin: var(--spacing-xl); }
-
-.mt-md { margin-top: var(--spacing-md); }
-.mb-md { margin-bottom: var(--spacing-md); }
-.my-lg { margin-top: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
-
-/* Standard transitions */
-.fade-in {
-  animation: fadeIn var(--duration-transition) var(--ease-out);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Respecter prefers-reduced-motion directive */
@@ -191,7 +113,7 @@ body {
 }
 
 /* ============================================
-   4. FLOATING AMBIENT GLOW ORBS
+   3. FLOATING AMBIENT GLOW ORBS
    ============================================ */
 
 .ambient-glow {
@@ -200,7 +122,7 @@ body {
   filter: blur(100px);
   z-index: 0;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.25;
   transition: background-color var(--duration-slow) var(--ease-out);
 }
 
@@ -210,7 +132,6 @@ body {
   background-color: var(--theme-color);
   top: -152px;
   left: -104px;
-  animation: floatingOrb1 25s infinite alternate ease-in-out;
 }
 
 .glow-2 {
@@ -219,27 +140,16 @@ body {
   background-color: var(--color-muted);
   bottom: -200px;
   right: -104px;
-  opacity: 0.15;
-  animation: floatingOrb2 30s infinite alternate ease-in-out;
-}
-
-@keyframes floatingOrb1 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(80px, 56px) scale(1.15); }
-}
-
-@keyframes floatingOrb2 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-96px, -56px) scale(0.9); }
+  opacity: 0.1;
 }
 
 /* ============================================
-   5. CONTENEUR & HEADER
+   4. CONTENEUR & HEADER
    ============================================ */
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1024px;
   min-height: 100vh;
   margin: 0 auto;
   padding: var(--spacing-xl);
@@ -288,8 +198,8 @@ body {
 .logo-text {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 24px;
-  letter-spacing: -1.5px;
+  font-size: 28px;
+  letter-spacing: -1px;
   line-height: 1.1;
   color: var(--color-foreground);
 }
@@ -299,10 +209,8 @@ body {
   color: var(--color-muted);
 }
 
-
-
 /* ============================================
-   6. CARTES (Conformity to Template + Glassmorphic design)
+   5. CARTES (Glassmorphic design)
    ============================================ */
 
 .card {
@@ -313,9 +221,11 @@ body {
   border-radius: var(--radius-xl);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-lg);
-  transition: border-color var(--duration-page) var(--ease-out), box-shadow var(--duration-page) var(--ease-out);
+  transition: border-color var(--duration-transition) var(--ease-out), box-shadow var(--duration-transition) var(--ease-out);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .card::before {
@@ -341,7 +251,7 @@ body {
 .card-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 24px;
+  font-size: 22px;
   letter-spacing: -0.5px;
   color: var(--color-foreground);
   margin-bottom: var(--spacing-xs);
@@ -351,64 +261,32 @@ body {
   font-size: 12px;
   color: var(--color-muted);
   font-weight: 500;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 /* ============================================
-   7. DASHBOARD GRID LAYOUT
+   6. DASHBOARD GRID LAYOUT
    ============================================ */
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
+  grid-template-columns: 0.82fr 1.18fr;
   gap: var(--spacing-xl);
   z-index: 1;
 }
 
-/* 7.1 LEFT COLUMN: POMODORO TIMER */
+/* 6.1 LEFT COLUMN: FOCUS TIMER */
 .timer-card {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   min-height: 480px;
-}
-
-.timer-mode-switcher {
-  display: flex;
-  background: rgba(0, 0, 0, 0.2);
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  margin-bottom: var(--spacing-xl);
-}
-
-.mode-btn {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--color-muted);
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  padding: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: color var(--duration-transition) var(--ease-out), background var(--duration-transition) var(--ease-out);
-}
-
-.mode-btn.active {
-  color: var(--color-foreground);
-  background: rgba(255, 255, 255, 0.08);
-  font-weight: 600;
 }
 
 .timer-visual-container {
   position: relative;
   width: 280px;
   height: 280px;
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -449,22 +327,108 @@ body {
   letter-spacing: 2px;
   color: var(--color-muted);
   margin-top: var(--spacing-sm);
-  text-transform: uppercase;
+}
+
+/* Preset durations & custom minutes styling */
+.duration-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: rgba(0, 0, 0, 0.16);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: var(--spacing-md);
+}
+
+.section-subtitle {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  letter-spacing: 0.5px;
+}
+
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.preset-btn {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--color-muted);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) 0;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-transition) var(--ease-out);
+}
+
+.preset-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-foreground);
+}
+
+.preset-btn.active {
+  background: var(--theme-color);
+  color: var(--color-background);
+  border-color: var(--theme-color);
+  box-shadow: 0 0 8px var(--theme-glow);
+}
+
+.custom-duration-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.custom-duration-label {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.custom-minutes-input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  font-size: 13px;
+  width: 72px;
+  text-align: center;
+  outline: none;
+  transition: border-color var(--duration-transition) var(--ease-out);
+}
+
+.custom-minutes-input:focus {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.custom-minutes-unit {
+  font-size: 13px;
+  color: var(--color-muted);
 }
 
 .timer-controls {
   display: flex;
   gap: var(--spacing-md);
   width: 100%;
-  max-width: 320px;
 }
 
-/* Custom Pomodoro Control Buttons */
 .control-btn {
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 14px;
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-md);
   border-radius: var(--radius-lg);
   cursor: pointer;
   border: none;
@@ -479,7 +443,7 @@ body {
 .btn-primary {
   background-color: var(--theme-color);
   color: var(--color-background);
-  flex: 2;
+  flex: 1.5;
   box-shadow: 0 8px 24px var(--theme-glow);
 }
 
@@ -496,7 +460,7 @@ body {
   background: rgba(255, 255, 255, 0.04);
   color: var(--color-foreground);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  flex: 1.2;
+  flex: 1;
 }
 
 .btn-secondary:hover {
@@ -509,15 +473,16 @@ body {
   transform: translateY(0) scale(0.96);
 }
 
-.btn-icon {
-  font-size: 14px;
+/* 6.2 RIGHT COLUMN: AUDIO GENERATOR */
+.audio-card {
+  min-height: 480px;
+  justify-content: space-between;
 }
 
-/* 7.2 RIGHT COLUMN (TOP): AUDIO GENERATOR */
 .audio-tracks-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-sm);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -525,11 +490,11 @@ body {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   transition: background var(--duration-transition) var(--ease-out), border-color var(--duration-transition) var(--ease-out);
 }
 
@@ -540,13 +505,27 @@ body {
 
 .track-info {
   display: flex;
-  gap: var(--spacing-xs);
-  align-items: flex-start;
+  gap: var(--spacing-sm);
+  align-items: center;
 }
 
 .track-icon {
-  font-size: 24px;
-  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.track-icon-svg {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--duration-transition) var(--ease-out);
+}
+
+.audio-track-item:hover .track-icon-svg {
+  transform: scale(1.1);
 }
 
 .track-details {
@@ -555,13 +534,13 @@ body {
 }
 
 .track-name {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--color-foreground);
 }
 
 .track-desc {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--color-muted);
 }
 
@@ -569,8 +548,6 @@ body {
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   background: rgba(255, 255, 255, 0.04);
   color: var(--color-muted);
   border: 1px solid rgba(255, 255, 255, 0.04);
@@ -627,7 +604,7 @@ body {
   cursor: pointer;
 }
 
-/* Custom Range Thumbs (Strict multiple of 8px sizing) */
+/* Custom Range Thumbs */
 .volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -657,204 +634,8 @@ body {
   transform: scale(1.25);
 }
 
-/* 7.3 RIGHT COLUMN (BOTTOM): TASK LIST / PLANNER */
-.add-task-form {
-  display: flex;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-md);
-}
-
-.add-task-form input {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  color: var(--color-foreground);
-  font-family: var(--font-body);
-  font-size: 14px;
-  outline: none;
-  flex: 1;
-  transition: border-color var(--duration-transition) var(--ease-out), box-shadow var(--duration-transition) var(--ease-out);
-}
-
-.add-task-form input::placeholder {
-  color: var(--color-muted);
-  opacity: 0.5;
-}
-
-.add-task-form input:focus {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.04);
-}
-
-.add-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  color: var(--color-foreground);
-  border-radius: var(--radius-lg);
-  width: 48px;
-  height: 48px;
-  cursor: pointer;
-  font-size: 24px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background var(--duration-transition) var(--ease-out), border-color var(--duration-transition) var(--ease-out), transform var(--duration-transition) var(--ease-out);
-}
-
-.add-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.add-btn:active {
-  transform: scale(0.96);
-}
-
-.task-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  max-height: 200px;
-  overflow-y: auto;
-  padding-right: var(--spacing-sm);
-}
-
-/* Custom Scrollbar for Tasks */
-.task-list::-webkit-scrollbar {
-  width: 8px;
-}
-
-.task-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.task-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius-sm);
-}
-
-.task-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-md);
-  transition: opacity var(--duration-transition) var(--ease-out), transform var(--duration-transition) var(--ease-out), background var(--duration-transition) var(--ease-out);
-}
-
-.task-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.task-item.completed {
-  opacity: 0.48;
-}
-
-.task-item-left {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  flex: 1;
-}
-
-/* Custom Checkbox Design (Strict multiples of 8px) */
-.task-checkbox-wrapper {
-  position: relative;
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.task-checkbox-input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-.task-checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 16px;
-  width: 16px;
-  background-color: transparent;
-  border: 1px solid var(--color-muted);
-  border-radius: var(--radius-sm);
-  transition: background-color var(--duration-transition) var(--ease-out), border-color var(--duration-transition) var(--ease-out);
-}
-
-.task-checkbox-wrapper:hover .task-checkmark {
-  border-color: var(--color-foreground);
-}
-
-.task-checkbox-input:checked ~ .task-checkmark {
-  background-color: var(--theme-color);
-  border-color: var(--theme-color);
-  box-shadow: 0 0 8px var(--theme-glow);
-}
-
-.task-checkmark::after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-.task-checkbox-input:checked ~ .task-checkmark::after {
-  display: block;
-}
-
-/* Reconfigured custom checkmark graphics using border rules (avoiding width keyword) */
-.task-checkbox-wrapper .task-checkmark::after {
-  left: 4px;
-  top: 0px;
-  width: 4px;
-  height: 8px;
-  border: 2px solid var(--color-background);
-  border-top: none;
-  border-left: none;
-  transform: rotate(45deg);
-}
-
-.task-title {
-  font-size: 14px;
-  color: var(--color-foreground);
-  word-break: break-all;
-  transition: text-decoration var(--duration-transition) var(--ease-out), color var(--duration-transition) var(--ease-out);
-}
-
-.task-item.completed .task-title {
-  text-decoration: line-through;
-  color: var(--color-muted);
-}
-
-.delete-task-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.16);
-  font-size: 16px;
-  cursor: pointer;
-  padding: var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  transition: color var(--duration-transition) var(--ease-out), transform var(--duration-transition) var(--ease-out);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.delete-task-btn:hover {
-  color: var(--color-error);
-  transform: scale(1.2);
-}
-
 /* ============================================
-   8. FOOTER
+   7. FOOTER
    ============================================ */
 
 .app-footer {
@@ -873,7 +654,7 @@ body {
 }
 
 /* ============================================
-   9. RESPONSIVE GRID LAYOUTS (8px multiple breakpoints)
+   8. RESPONSIVE GRID LAYOUTS (8px multiple breakpoints)
    ============================================ */
 
 @media (max-width: 896px) {
@@ -882,12 +663,16 @@ body {
     gap: var(--spacing-md);
   }
   
-  .timer-card {
+  .audio-tracks-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .timer-card, .audio-card {
     min-height: 440px;
   }
   
   .container {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-md);
   }
 }
 
@@ -915,6 +700,4 @@ body {
     gap: var(--spacing-sm);
     align-items: flex-start;
   }
-  
-
 }

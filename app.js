@@ -1,6 +1,6 @@
 /* ==========================================================================
-   APP.JS — Zenith Focus Premium Application Logic
-   Features: GSAP Motion, Pomodoro countdown, Web Audio Synth, LocalStorage tasks
+   APP.JS — FocusMood Application Logic
+   Features: GSAP entry animations, Custom Timer (presets & custom), 12 Synth Tracks
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -10,33 +10,37 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- State Variables ---
     let timerInterval = null;
     let isTimerRunning = false;
-    let timerMode = "focus"; // "focus" or "break"
     
-    // Durations in seconds
-    const focusDuration = 25 * 60;
-    const breakDuration = 5 * 60;
-    let timeRemaining = focusDuration;
+    // Default duration in seconds (30 minutes)
+    let timerDuration = 30 * 60;
+    let timeRemaining = timerDuration;
 
     // --- DOM Elements ---
-
-    
     const timeDigits = document.getElementById("time-digits");
-    const timeStateLabel = document.getElementById("time-state-label");
-    const btnModeFocus = document.getElementById("btn-mode-focus");
-    const btnModeBreak = document.getElementById("btn-mode-break");
     const progressIndicator = document.getElementById("progress-indicator");
     
     const btnTimerToggle = document.getElementById("btn-timer-toggle");
     const btnTimerReset = document.getElementById("btn-timer-reset");
     
-    const btnAudioGamma = document.getElementById("btn-audio-gamma");
+    const presetBtns = document.querySelectorAll(".preset-btn");
+    const inputCustomMinutes = document.getElementById("input-custom-minutes");
+    
+    // Audio buttons
+    const btnAudioAlpha = document.getElementById("btn-audio-alpha");
+    const btnAudioTheta = document.getElementById("btn-audio-theta");
+    const btnAudioPink = document.getElementById("btn-audio-pink");
+    const btnAudioBrown = document.getElementById("btn-audio-brown");
+    const btnAudioOcean = document.getElementById("btn-audio-ocean");
     const btnAudioRain = document.getElementById("btn-audio-rain");
+    const btnAudioStream = document.getElementById("btn-audio-stream");
+    const btnAudioFire = document.getElementById("btn-audio-fire");
+    const btnAudioCrickets = document.getElementById("btn-audio-crickets");
+    const btnAudioHeart = document.getElementById("btn-audio-heart");
+    const btnAudioDrone = document.getElementById("btn-audio-drone");
+    const btnAudioViolin = document.getElementById("btn-audio-violin");
+    
     const sliderVolume = document.getElementById("slider-volume");
     const volumeValDisplay = document.getElementById("volume-val-display");
-    
-    const formAddTask = document.getElementById("form-add-task");
-    const inputTask = document.getElementById("input-task");
-    const taskListContainer = document.getElementById("task-list-container");
 
     // SVG Circle Configuration
     const circlePerimeter = 754; // 2 * PI * r (r=120)
@@ -72,8 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, "-=0.6");
     }
 
-    // --- Pomodoro Timer Functionality ---
-    
+    // --- Timer Display Updates ---
     function updateTimerDisplay() {
         const minutes = Math.floor(timeRemaining / 60);
         const seconds = timeRemaining % 60;
@@ -81,103 +84,60 @@ document.addEventListener("DOMContentLoaded", () => {
         
         timeDigits.textContent = formattedTime;
         
-        // Update browser tab title
-        const modeEmoji = timerMode === "focus" ? "🧘" : "⚡";
-        document.title = `${formattedTime} ${modeEmoji} Zenith Focus`;
+        // Tab title logic: "FocusMood - MM:SS" if running, otherwise "FocusMood - Concentration et Relaxation"
+        if (isTimerRunning) {
+            document.title = `FocusMood - ${formattedTime}`;
+        } else {
+            document.title = "FocusMood - Concentration et Relaxation";
+        }
 
         // Calculate progress ring circle offset
-        const totalDuration = timerMode === "focus" ? focusDuration : breakDuration;
-        const progressFraction = timeRemaining / totalDuration;
+        const progressFraction = timeRemaining / timerDuration;
         const offset = circlePerimeter * (1 - progressFraction);
         progressIndicator.style.strokeDashoffset = offset;
     }
 
-    function setMode(mode) {
-        if (timerMode === mode) return;
+    // --- Timer Controls ---
+    function startTimer() {
+        isTimerRunning = true;
+        btnTimerToggle.querySelector(".btn-icon").textContent = "❚❚";
+        btnTimerToggle.querySelector(".btn-text").textContent = "Pause";
         
-        timerMode = mode;
-        clearInterval(timerInterval);
-        isTimerRunning = false;
-        
-        // Update control button visuals
-        btnTimerToggle.classList.remove("active");
-        btnTimerToggle.querySelector(".btn-icon").textContent = "▶";
-        btnTimerToggle.querySelector(".btn-text").textContent = "DÉMARRER";
+        updateTimerDisplay(); // immediate title update
 
-        // Dynamic theme switching
-        if (timerMode === "focus") {
-            btnModeFocus.classList.add("active");
-            btnModeBreak.classList.remove("active");
-            timeStateLabel.textContent = "FOCUS";
-            timeRemaining = focusDuration;
-            
-            // Adjust design tokens
-            document.documentElement.style.setProperty("--theme-color", "var(--color-primary)");
-            document.documentElement.style.setProperty("--theme-glow", "var(--color-primary-glow)");
-            
+        timerInterval = setInterval(() => {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                updateTimerDisplay();
+            } else {
+                handleTimerCompletion();
+            }
+        }, 1000);
 
-        } else {
-            btnModeFocus.classList.remove("active");
-            btnModeBreak.classList.add("active");
-            timeStateLabel.textContent = "PAUSE";
-            timeRemaining = breakDuration;
-            
-            // Adjust design tokens
-            document.documentElement.style.setProperty("--theme-color", "var(--color-secondary)");
-            document.documentElement.style.setProperty("--theme-glow", "var(--color-secondary-glow)");
-            
-
-        }
-        
-        // Quick visual effect on the ring stroke color during switch
-        progressIndicator.style.stroke = `var(--theme-color)`;
-
-        updateTimerDisplay();
+        // Subtle button micro-interaction
+        gsap.to(btnTimerToggle, { scale: 1.03, duration: 0.2 });
     }
 
-    function toggleTimer() {
-        if (isTimerRunning) {
-            // Pause
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            btnTimerToggle.querySelector(".btn-icon").textContent = "▶";
-            btnTimerToggle.querySelector(".btn-text").textContent = "REPRENDRE";
+    function pauseTimer() {
+        clearInterval(timerInterval);
+        isTimerRunning = false;
+        btnTimerToggle.querySelector(".btn-icon").textContent = "▶";
+        btnTimerToggle.querySelector(".btn-text").textContent = "Démarrer";
+        
+        updateTimerDisplay(); // restore base title
 
-            
-            gsap.to(btnTimerToggle, { scale: 1, duration: 0.2 });
-        } else {
-            // Start/Resume
-            isTimerRunning = true;
-            btnTimerToggle.querySelector(".btn-icon").textContent = "❚❚";
-            btnTimerToggle.querySelector(".btn-text").textContent = "PAUSE";
-
-            
-            timerInterval = setInterval(() => {
-                if (timeRemaining > 0) {
-                    timeRemaining--;
-                    updateTimerDisplay();
-                } else {
-                    // Timer finished
-                    handleTimerCompletion();
-                }
-            }, 1000);
-
-            // Subtle button micro-interaction
-            gsap.to(btnTimerToggle, { scale: 1.03, duration: 0.2 });
-        }
+        gsap.to(btnTimerToggle, { scale: 1, duration: 0.2 });
     }
 
     function resetTimer() {
         clearInterval(timerInterval);
         isTimerRunning = false;
         
-        timeRemaining = timerMode === "focus" ? focusDuration : breakDuration;
-        
         btnTimerToggle.querySelector(".btn-icon").textContent = "▶";
-        btnTimerToggle.querySelector(".btn-text").textContent = "DÉMARRER";
+        btnTimerToggle.querySelector(".btn-text").textContent = "Démarrer";
         
-
-        updateTimerDisplay();
+        timeRemaining = timerDuration;
+        updateTimerDisplay(); // restores base title
 
         gsap.fromTo(timeDigits, { opacity: 0.5 }, { opacity: 1, duration: 0.3 });
     }
@@ -186,44 +146,117 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(timerInterval);
         isTimerRunning = false;
         
-        // Play gentle audio notification using synthesized beep
+        // Play beep notification
         playSynthesizedBeep();
 
-        if (timerMode === "focus") {
-
-            // Auto switch to break mode
-            setMode("break");
-        } else {
-
-            // Auto switch to focus mode
-            setMode("focus");
-        }
+        btnTimerToggle.querySelector(".btn-icon").textContent = "▶";
+        btnTimerToggle.querySelector(".btn-text").textContent = "Démarrer";
+        
+        timeRemaining = timerDuration;
+        updateTimerDisplay();
     }
 
-    // --- Web Audio Engine & Sounds ---
+    // --- Duration Selectors Events ---
+    presetBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            // Remove active classes
+            presetBtns.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            
+            // Clear custom input
+            inputCustomMinutes.value = "";
+            
+            // Pause timer if running
+            if (isTimerRunning) {
+                pauseTimer();
+            }
+            
+            const minutes = parseInt(btn.getAttribute("data-minutes"), 10);
+            timerDuration = minutes * 60;
+            timeRemaining = timerDuration;
+            updateTimerDisplay();
+        });
+    });
+
+    inputCustomMinutes.addEventListener("input", () => {
+        // Remove active class from preset buttons
+        presetBtns.forEach(b => b.classList.remove("active"));
+        
+        let val = parseInt(inputCustomMinutes.value, 10);
+        if (isNaN(val) || val <= 0) {
+            val = 30; // fallback to default
+        }
+        
+        // Cap duration to 720 minutes (12 hours)
+        if (val > 720) {
+            val = 720;
+            inputCustomMinutes.value = 720;
+        }
+
+        // Pause timer if running
+        if (isTimerRunning) {
+            pauseTimer();
+        }
+
+        timerDuration = val * 60;
+        timeRemaining = timerDuration;
+        updateTimerDisplay();
+    });
+
+    btnTimerToggle.addEventListener("click", () => {
+        if (isTimerRunning) {
+            pauseTimer();
+        } else {
+            // Unlock Web Audio Context if needed
+            getAudioContext();
+            startTimer();
+        }
+    });
+
+    btnTimerReset.addEventListener("click", resetTimer);
+
+    // --- Web Audio Engine ---
     let audioCtx = null;
     let masterGainNode = null;
-    let gammaNodes = null; // Holds Left/Right oscillators + panners
-    let rainNodes = null;  // Holds Noise node + filters + LFO modulation
+    
+    // Synth node references
+    let alphaNodes = null;
+    let thetaNodes = null;
+    let pinkNodes = null;
+    let brownNodes = null;
+    let oceanNodes = null;
+    let rainNodes = null;
+    let streamNodes = null;
+    let fireNodes = null;
+    let cricketsNodes = null;
+    let heartNodes = null;
+    let droneNodes = null;
+    
+    // Violin scheduler variables
+    let violinInterval = null;
+    let violinOscs = [];
+    let violinVibratos = [];
+    let violinFilter = null;
+    let violinGain = null;
+    let violinIndex = 0;
 
     function getAudioContext() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             
-            // Create Master Gain
+            // Create Master Gain node
             masterGainNode = audioCtx.createGain();
             masterGainNode.gain.value = sliderVolume.value / 100;
             masterGainNode.connect(audioCtx.destination);
         }
         
-        // Auto-resume context if suspended by browser security policy
         if (audioCtx.state === "suspended") {
             audioCtx.resume();
         }
         return audioCtx;
     }
 
-    // Gentle Beep for Timer End
+    // Play Beep sound
     function playSynthesizedBeep() {
         try {
             const ctx = getAudioContext();
@@ -231,8 +264,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const gain = ctx.createGain();
             
             osc.type = "sine";
-            osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5 note
-            osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.3); // G5 note
+            osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+            osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.3); // G5
             
             gain.gain.setValueAtTime(0.15, ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
@@ -247,183 +280,812 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Binaural Beats Generation (200Hz Left, 240Hz Right -> 40Hz Gamma waves)
-    function startGammaBinaural() {
+    // Helper to generate Pink Noise Buffer
+    function generatePinkNoiseBuffer(ctx, seconds = 2) {
+        const sampleRate = ctx.sampleRate;
+        const bufferSize = sampleRate * seconds;
+        const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+        for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            b0 = 0.99886 * b0 + white * 0.0555179;
+            b1 = 0.99332 * b1 + white * 0.0750759;
+            b2 = 0.96900 * b2 + white * 0.1538520;
+            b3 = 0.86650 * b3 + white * 0.3104856;
+            b4 = 0.55000 * b4 + white * 0.5329522;
+            b5 = -0.7616 * b5 - white * 0.0168980;
+            data[i] = b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362;
+            data[i] *= 0.11; // Gain compensation
+            b6 = white * 0.115926;
+        }
+        return buffer;
+    }
+
+    // 1. Ondes Alpha (Binaural: 200Hz / 210Hz)
+    function startAlpha() {
         const ctx = getAudioContext();
-        
-        // Left Oscillator (Carrier: 200 Hz)
-        const leftOsc = ctx.createOscillator();
-        leftOsc.type = "sine";
-        leftOsc.frequency.value = 200;
-        
+        const leftOsc = ctx.createOscillator(); leftOsc.type = "sine"; leftOsc.frequency.value = 200;
         const leftPanner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
         if (leftPanner) leftPanner.pan.value = -1;
 
-        // Right Oscillator (Carrier + 40Hz: 240 Hz)
-        const rightOsc = ctx.createOscillator();
-        rightOsc.type = "sine";
-        rightOsc.frequency.value = 240;
-
+        const rightOsc = ctx.createOscillator(); rightOsc.type = "sine"; rightOsc.frequency.value = 210;
         const rightPanner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
         if (rightPanner) rightPanner.pan.value = 1;
 
-        // Visual low humming sound feel - keep volume cozy and low
         const trackGain = ctx.createGain();
-        trackGain.gain.value = 0.08;
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
 
-        // Chain Nodes
         if (leftPanner && rightPanner) {
-            leftOsc.connect(leftPanner);
-            leftPanner.connect(trackGain);
-
-            rightOsc.connect(rightPanner);
-            rightPanner.connect(trackGain);
+            leftOsc.connect(leftPanner); leftPanner.connect(trackGain);
+            rightOsc.connect(rightPanner); rightPanner.connect(trackGain);
         } else {
-            leftOsc.connect(trackGain);
-            rightOsc.connect(trackGain);
+            leftOsc.connect(trackGain); rightOsc.connect(trackGain);
         }
-
         trackGain.connect(masterGainNode);
 
-        // Start Oscillators
-        leftOsc.start();
-        rightOsc.start();
-
-        gammaNodes = {
-            leftOsc,
-            rightOsc,
-            trackGain
-        };
+        leftOsc.start(); rightOsc.start();
+        trackGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.5);
+        alphaNodes = { leftOsc, rightOsc, trackGain };
     }
 
-    function stopGammaBinaural() {
-        if (gammaNodes) {
+    function stopAlpha() {
+        if (alphaNodes) {
             const ctx = getAudioContext();
-            
-            // Fade out cleanly to avoid dynamic audio pops
-            gammaNodes.trackGain.gain.setValueAtTime(gammaNodes.trackGain.gain.value, ctx.currentTime);
-            gammaNodes.trackGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
-            
+            const nodes = alphaNodes; alphaNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
             setTimeout(() => {
-                try {
-                    gammaNodes.leftOsc.stop();
-                    gammaNodes.rightOsc.stop();
-                } catch (err) {}
-                gammaNodes = null;
-            }, 300);
-        }
-    }
-
-    // Ambient space rain: White noise filtered through lowpass and modulated by a gentle LFO
-    function startSpaceRain() {
-        const ctx = getAudioContext();
-
-        // 1. Generate White Noise Buffer
-        const sampleRate = ctx.sampleRate;
-        const bufferSize = sampleRate * 2; // 2 seconds of sound
-        const noiseBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-            output[i] = Math.random() * 2 - 1;
-        }
-
-        // 2. Buffer Source Node
-        const noiseSource = ctx.createBufferSource();
-        noiseSource.buffer = noiseBuffer;
-        noiseSource.loop = true;
-
-        // 3. Low Pass Filter (Removes high piercing white noise and transforms it to warm rain)
-        const lowpassFilter = ctx.createBiquadFilter();
-        lowpassFilter.type = "lowpass";
-        lowpassFilter.frequency.setValueAtTime(450, ctx.currentTime);
-        lowpassFilter.Q.value = 1.0;
-
-        // 4. Peaking filter to simulate dynamic wind/wave rustles
-        const peakFilter = ctx.createBiquadFilter();
-        peakFilter.type = "peaking";
-        peakFilter.frequency.setValueAtTime(250, ctx.currentTime);
-        peakFilter.Q.value = 1.5;
-        peakFilter.gain.setValueAtTime(8, ctx.currentTime);
-
-        // 5. Volume Gain
-        const trackGain = ctx.createGain();
-        trackGain.gain.value = 0.12;
-
-        // 6. LFO (Modulation oscillator to simulate swell cycles every 8 seconds)
-        const lfo = ctx.createOscillator();
-        lfo.type = "sine";
-        lfo.frequency.value = 0.125; // 1 / 8 seconds
-
-        const lfoGain = ctx.createGain();
-        lfoGain.gain.value = 120; // Modulates filter frequency by +/- 120Hz
-
-        // Chain LFO to Filter frequency
-        lfo.connect(lfoGain);
-        lfoGain.connect(lowpassFilter.frequency);
-
-        // Chain Audio nodes
-        noiseSource.connect(lowpassFilter);
-        lowpassFilter.connect(peakFilter);
-        peakFilter.connect(trackGain);
-        trackGain.connect(masterGainNode);
-
-        // Start playing
-        noiseSource.start();
-        lfo.start();
-
-        rainNodes = {
-            noiseSource,
-            lowpassFilter,
-            peakFilter,
-            trackGain,
-            lfo
-        };
-    }
-
-    function stopSpaceRain() {
-        if (rainNodes) {
-            const ctx = getAudioContext();
-            
-            // Clean fade out
-            rainNodes.trackGain.gain.setValueAtTime(rainNodes.trackGain.gain.value, ctx.currentTime);
-            rainNodes.trackGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.4);
-            
-            setTimeout(() => {
-                try {
-                    rainNodes.noiseSource.stop();
-                    rainNodes.lfo.stop();
-                } catch (err) {}
-                rainNodes = null;
+                try { nodes.leftOsc.stop(); nodes.rightOsc.stop(); } catch (err) {}
             }, 400);
         }
     }
 
-    // --- Audio Control Listeners ---
+    // 2. Ondes Theta (Binaural: 200Hz / 206Hz)
+    function startTheta() {
+        const ctx = getAudioContext();
+        const leftOsc = ctx.createOscillator(); leftOsc.type = "sine"; leftOsc.frequency.value = 200;
+        const leftPanner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+        if (leftPanner) leftPanner.pan.value = -1;
 
-    btnAudioGamma.addEventListener("click", () => {
-        if (gammaNodes) {
-            stopGammaBinaural();
-            btnAudioGamma.classList.remove("playing");
-            btnAudioGamma.textContent = "Jouer";
+        const rightOsc = ctx.createOscillator(); rightOsc.type = "sine"; rightOsc.frequency.value = 206;
+        const rightPanner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+        if (rightPanner) rightPanner.pan.value = 1;
+
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+
+        if (leftPanner && rightPanner) {
+            leftOsc.connect(leftPanner); leftPanner.connect(trackGain);
+            rightOsc.connect(rightPanner); rightPanner.connect(trackGain);
         } else {
-            // Unlock Web Audio context first if browser is strict
+            leftOsc.connect(trackGain); rightOsc.connect(trackGain);
+        }
+        trackGain.connect(masterGainNode);
+
+        leftOsc.start(); rightOsc.start();
+        trackGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.5);
+        thetaNodes = { leftOsc, rightOsc, trackGain };
+    }
+
+    function stopTheta() {
+        if (thetaNodes) {
+            const ctx = getAudioContext();
+            const nodes = thetaNodes; thetaNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.leftOsc.stop(); nodes.rightOsc.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 3. Bruit Rose (Pink Noise)
+    function startPink() {
+        const ctx = getAudioContext();
+        const buffer = generatePinkNoiseBuffer(ctx, 2);
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        source.connect(trackGain);
+        trackGain.connect(masterGainNode);
+        source.start();
+        
+        trackGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.5);
+        pinkNodes = { source, trackGain };
+    }
+
+    function stopPink() {
+        if (pinkNodes) {
+            const ctx = getAudioContext();
+            const nodes = pinkNodes; pinkNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 4. Bruit Brun (Deep Brownian Noise)
+    function startBrown() {
+        const ctx = getAudioContext();
+        const sampleRate = ctx.sampleRate;
+        const bufferSize = sampleRate * 2;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        
+        let lastOut = 0.0;
+        for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            output[i] = (lastOut + (0.02 * white)) / 1.02;
+            lastOut = output[i];
+            output[i] *= 3.5;
+        }
+
+        const source = ctx.createBufferSource();
+        source.buffer = noiseBuffer;
+        source.loop = true;
+
+        const lowpassFilter = ctx.createBiquadFilter();
+        lowpassFilter.type = "lowpass";
+        lowpassFilter.frequency.setValueAtTime(320, ctx.currentTime);
+
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+
+        source.connect(lowpassFilter);
+        lowpassFilter.connect(trackGain);
+        trackGain.connect(masterGainNode);
+
+        source.start();
+        trackGain.gain.linearRampToValueAtTime(0.14, ctx.currentTime + 0.5);
+
+        brownNodes = { source, trackGain };
+    }
+
+    function stopBrown() {
+        if (brownNodes) {
+            const ctx = getAudioContext();
+            const nodes = brownNodes; brownNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 5. Vagues (Modulated Pink Noise Ocean Waves)
+    function startOcean() {
+        const ctx = getAudioContext();
+        const buffer = generatePinkNoiseBuffer(ctx, 4);
+
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+
+        const lowpassFilter = ctx.createBiquadFilter();
+        lowpassFilter.type = "lowpass";
+        lowpassFilter.frequency.setValueAtTime(300, ctx.currentTime);
+
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+
+        const lfo = ctx.createOscillator();
+        lfo.type = "sine";
+        lfo.frequency.value = 0.08; // 12.5s wave cycle
+
+        const lfoFilterGain = ctx.createGain();
+        lfoFilterGain.gain.value = 180;
+        
+        lfo.connect(lfoFilterGain);
+        lfoFilterGain.connect(lowpassFilter.frequency);
+
+        const lfoGainNode = ctx.createGain();
+        lfoGainNode.gain.value = 0.04;
+        
+        lfo.connect(lfoGainNode);
+        lfoGainNode.connect(trackGain.gain);
+
+        source.connect(lowpassFilter);
+        lowpassFilter.connect(trackGain);
+        trackGain.connect(masterGainNode);
+
+        source.start();
+        lfo.start();
+        
+        trackGain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 0.5);
+        oceanNodes = { source, lfo, trackGain };
+    }
+
+    function stopOcean() {
+        if (oceanNodes) {
+            const ctx = getAudioContext();
+            const nodes = oceanNodes; oceanNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); nodes.lfo.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 6. Pluie (Filtered Pink Noise with droplet character)
+    function startRain() {
+        const ctx = getAudioContext();
+        const buffer = generatePinkNoiseBuffer(ctx, 2);
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        
+        const bandpass = ctx.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.setValueAtTime(1400, ctx.currentTime);
+        bandpass.Q.setValueAtTime(0.8, ctx.currentTime);
+        
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        source.connect(bandpass);
+        bandpass.connect(trackGain);
+        trackGain.connect(masterGainNode);
+        
+        source.start();
+        trackGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.5);
+        
+        rainNodes = { source, trackGain };
+    }
+
+    function stopRain() {
+        if (rainNodes) {
+            const ctx = getAudioContext();
+            const nodes = rainNodes; rainNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 7. Ruisseau (Modulated Bubbling Water Stream)
+    function startStream() {
+        const ctx = getAudioContext();
+        const buffer = generatePinkNoiseBuffer(ctx, 2);
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        
+        const bandpass = ctx.createBiquadFilter();
+        bandpass.type = "bandpass";
+        bandpass.frequency.setValueAtTime(850, ctx.currentTime);
+        bandpass.Q.setValueAtTime(3.5, ctx.currentTime);
+        
+        // Fast LFO to create rapid bubbling ripples
+        const lfo = ctx.createOscillator();
+        lfo.type = "sine";
+        lfo.frequency.value = 3.8;
+        
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 240;
+        
+        lfo.connect(lfoGain);
+        lfoGain.connect(bandpass.frequency);
+        
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        source.connect(bandpass);
+        bandpass.connect(trackGain);
+        trackGain.connect(masterGainNode);
+        
+        source.start();
+        lfo.start();
+        
+        trackGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.5);
+        streamNodes = { source, lfo, trackGain };
+    }
+
+    function stopStream() {
+        if (streamNodes) {
+            const ctx = getAudioContext();
+            const nodes = streamNodes; streamNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); nodes.lfo.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 8. Crépitement du Feu (Campfire: Pink base + transient click envelopes)
+    function startFire() {
+        const ctx = getAudioContext();
+        const sampleRate = ctx.sampleRate;
+        const bufferSize = sampleRate * 3; // 3 seconds loop
+        const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        // Generate soft pink noise rumble
+        let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+        for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            b0 = 0.99886 * b0 + white * 0.0555179;
+            b1 = 0.99332 * b1 + white * 0.0750759;
+            b2 = 0.96900 * b2 + white * 0.1538520;
+            b3 = 0.86650 * b3 + white * 0.3104856;
+            b4 = 0.55000 * b4 + white * 0.5329522;
+            b5 = -0.7616 * b5 - white * 0.0168980;
+            data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+            b6 = white * 0.115926;
+            
+            // Soft base volume
+            data[i] *= 0.08;
+        }
+        
+        // Superimpose random high frequency click decay transients
+        const numCrackles = 32;
+        for (let c = 0; c < numCrackles; c++) {
+            const pos = Math.floor(Math.random() * (bufferSize - 1000));
+            const duration = Math.floor(Math.random() * 450) + 80;
+            const amplitude = Math.random() * 0.45 + 0.15;
+            for (let i = 0; i < duration; i++) {
+                const t = i / duration;
+                const click = (Math.random() * 2 - 1) * amplitude * Math.exp(-t * 24);
+                data[pos + i] += click;
+            }
+        }
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        source.connect(trackGain);
+        trackGain.connect(masterGainNode);
+        source.start();
+        
+        trackGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.5);
+        fireNodes = { source, trackGain };
+    }
+
+    function stopFire() {
+        if (fireNodes) {
+            const ctx = getAudioContext();
+            const nodes = fireNodes; fireNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 9. Grillons (Night Crickets summer chirps)
+    function startCrickets() {
+        const ctx = getAudioContext();
+        const sampleRate = ctx.sampleRate;
+        const bufferSize = sampleRate * 4; // 4 seconds loop
+        const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        const chirp = (startSec) => {
+            const start = Math.floor(startSec * sampleRate);
+            const duration = Math.floor(0.06 * sampleRate); // 60ms
+            for (let i = 0; i < duration; i++) {
+                const t = i / sampleRate;
+                const ampMod = Math.sin(2 * Math.PI * 45 * t); // 45Hz flutter
+                const sineVal = Math.sin(2 * Math.PI * 3950 * t); // 3.95kHz carrier
+                const env = Math.exp(-t * 30);
+                data[start + i] += sineVal * (0.5 + 0.5 * ampMod) * env * 0.12;
+            }
+        };
+        
+        // Summer night rhythmic scheduling
+        chirp(0.4); chirp(0.55); chirp(0.7);
+        chirp(1.6); chirp(1.75); chirp(1.9);
+        chirp(2.8); chirp(2.95); chirp(3.1);
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        source.connect(trackGain);
+        trackGain.connect(masterGainNode);
+        source.start();
+        
+        trackGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.5);
+        cricketsNodes = { source, trackGain };
+    }
+
+    function stopCrickets() {
+        if (cricketsNodes) {
+            const ctx = getAudioContext();
+            const nodes = cricketsNodes; cricketsNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 10. Battement de Cœur (Calming rhythmic heart pulse at 60 BPM)
+    function startHeart() {
+        const ctx = getAudioContext();
+        const sampleRate = ctx.sampleRate;
+        const bufferSize = sampleRate; // 1 second (60 BPM)
+        const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
+        const data = buffer.getChannelData(0);
+        
+        // Lub thud
+        const lubLen = Math.floor(sampleRate * 0.15);
+        for (let i = 0; i < lubLen; i++) {
+            const t = i / sampleRate;
+            data[i] = Math.sin(2 * Math.PI * 52 * t) * Math.exp(-t * 22);
+        }
+        
+        // Dub thud at 0.32s
+        const dubStart = Math.floor(sampleRate * 0.32);
+        const dubLen = Math.floor(sampleRate * 0.15);
+        for (let i = 0; i < dubLen; i++) {
+            const t = i / sampleRate;
+            data[dubStart + i] = Math.sin(2 * Math.PI * 45 * t) * Math.exp(-t * 22) * 0.72;
+        }
+        
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.loop = true;
+        
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        source.connect(trackGain);
+        trackGain.connect(masterGainNode);
+        source.start();
+        
+        trackGain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + 0.5);
+        heartNodes = { source, trackGain };
+    }
+
+    function stopHeart() {
+        if (heartNodes) {
+            const ctx = getAudioContext();
+            const nodes = heartNodes; heartNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.4);
+            setTimeout(() => {
+                try { nodes.source.stop(); } catch (err) {}
+            }, 400);
+        }
+    }
+
+    // 11. Drone Zen (Warm major triad harmonic drone)
+    function startDrone() {
+        const ctx = getAudioContext();
+        const frequencies = [110, 165, 220, 275]; // A2, E3, A3, C#4
+        const oscs = [];
+        
+        const filter = ctx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(240, ctx.currentTime);
+        
+        const trackGain = ctx.createGain();
+        trackGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        frequencies.forEach(f => {
+            const osc = ctx.createOscillator();
+            osc.type = "triangle";
+            osc.frequency.value = f;
+            osc.connect(filter);
+            osc.start();
+            oscs.push(osc);
+        });
+        
+        filter.connect(trackGain);
+        trackGain.connect(masterGainNode);
+        
+        trackGain.gain.linearRampToValueAtTime(0.11, ctx.currentTime + 0.8);
+        droneNodes = { oscs, filter, trackGain };
+    }
+
+    function stopDrone() {
+        if (droneNodes) {
+            const ctx = getAudioContext();
+            const nodes = droneNodes; droneNodes = null;
+            nodes.trackGain.gain.setValueAtTime(nodes.trackGain.gain.value, ctx.currentTime);
+            nodes.trackGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 0.5);
+            setTimeout(() => {
+                nodes.oscs.forEach(osc => {
+                    try { osc.stop(); } catch (err) {}
+                });
+            }, 500);
+        }
+    }
+
+    // 12. Violon Calme (Generative soothing chord progression synthesizer)
+    function playViolinChordStep() {
+        if (!violinGain) return;
+        const ctx = getAudioContext();
+        
+        const chords = [
+            [110, 165, 220, 261.63],   // Am7 base (A2, E3, A3, C4)
+            [98, 146.83, 196, 246.94],  // G (G2, D3, G3, B3)
+            [87.31, 130.81, 174.61, 220], // F (F2, C3, F3, A3)
+            [82.41, 123.47, 164.81, 196]  // Em (E2, B2, E3, G3)
+        ];
+        
+        const freqList = chords[violinIndex];
+        
+        // Fade out previous oscillators
+        violinOscs.forEach(o => {
+            try {
+                o.gainNode.gain.setValueAtTime(o.gainNode.gain.value, ctx.currentTime);
+                o.gainNode.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 1.8);
+                setTimeout(() => {
+                    try { o.osc.stop(); } catch(e){}
+                }, 2000);
+            } catch(err){}
+        });
+        violinOscs = [];
+        
+        // Stop older vibrato nodes
+        violinVibratos.forEach(v => {
+            try { v.stop(); } catch(e){}
+        });
+        violinVibratos = [];
+        
+        // Play new chord
+        freqList.forEach(f => {
+            const osc = ctx.createOscillator();
+            osc.type = "sawtooth";
+            osc.frequency.value = f;
+            
+            // Slow vibrato LFO (4.8 Hz)
+            const vibrato = ctx.createOscillator();
+            const vibratoGain = ctx.createGain();
+            vibrato.frequency.value = 4.8;
+            vibratoGain.gain.value = f * 0.008; // subtle vibrato depth
+            
+            vibrato.connect(vibratoGain);
+            vibratoGain.connect(osc.frequency);
+            
+            const oscGain = ctx.createGain();
+            oscGain.gain.setValueAtTime(0.0, ctx.currentTime);
+            
+            osc.connect(oscGain);
+            oscGain.connect(violinFilter);
+            
+            osc.start();
+            vibrato.start();
+            
+            // Slow envelope attack
+            oscGain.gain.linearRampToValueAtTime(0.024, ctx.currentTime + 2.5);
+            
+            violinOscs.push({ osc, gainNode: oscGain });
+            violinVibratos.push(vibrato);
+        });
+        
+        violinIndex = (violinIndex + 1) % chords.length;
+    }
+    
+    function startViolin() {
+        const ctx = getAudioContext();
+        
+        violinFilter = ctx.createBiquadFilter();
+        violinFilter.type = "lowpass";
+        violinFilter.frequency.setValueAtTime(320, ctx.currentTime);
+        
+        violinGain = ctx.createGain();
+        violinGain.gain.setValueAtTime(0.0, ctx.currentTime);
+        
+        violinFilter.connect(violinGain);
+        violinGain.connect(masterGainNode);
+        
+        violinIndex = 0;
+        playViolinChordStep();
+        
+        // Cycle notes every 6 seconds
+        violinInterval = setInterval(playViolinChordStep, 6000);
+        violinGain.gain.linearRampToValueAtTime(0.8, ctx.currentTime + 0.8);
+    }
+
+    function stopViolin() {
+        if (violinInterval) {
+            clearInterval(violinInterval);
+            violinInterval = null;
+        }
+        if (violinGain) {
+            const ctx = getAudioContext();
+            const activeGain = violinGain; violinGain = null;
+            const activeOscs = violinOscs; violinOscs = [];
+            const activeVibs = violinVibratos; violinVibratos = [];
+            
+            activeGain.gain.setValueAtTime(activeGain.gain.value, ctx.currentTime);
+            activeGain.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 1.8);
+            
+            activeOscs.forEach(o => {
+                try {
+                    o.gainNode.gain.setValueAtTime(o.gainNode.gain.value, ctx.currentTime);
+                    o.gainNode.gain.linearRampToValueAtTime(0.0, ctx.currentTime + 1.8);
+                } catch(e){}
+            });
+            
+            setTimeout(() => {
+                activeOscs.forEach(o => { try { o.osc.stop(); } catch(e){} });
+                activeVibs.forEach(v => { try { v.stop(); } catch(e){} });
+            }, 2000);
+        }
+    }
+
+    // --- Audio Control Listeners ---
+    btnAudioAlpha.addEventListener("click", () => {
+        if (alphaNodes) {
+            stopAlpha();
+            btnAudioAlpha.classList.remove("playing");
+            btnAudioAlpha.textContent = "Jouer";
+        } else {
             getAudioContext();
-            startGammaBinaural();
-            btnAudioGamma.classList.add("playing");
-            btnAudioGamma.textContent = "Arrêter";
+            startAlpha();
+            btnAudioAlpha.classList.add("playing");
+            btnAudioAlpha.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioTheta.addEventListener("click", () => {
+        if (thetaNodes) {
+            stopTheta();
+            btnAudioTheta.classList.remove("playing");
+            btnAudioTheta.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startTheta();
+            btnAudioTheta.classList.add("playing");
+            btnAudioTheta.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioPink.addEventListener("click", () => {
+        if (pinkNodes) {
+            stopPink();
+            btnAudioPink.classList.remove("playing");
+            btnAudioPink.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startPink();
+            btnAudioPink.classList.add("playing");
+            btnAudioPink.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioBrown.addEventListener("click", () => {
+        if (brownNodes) {
+            stopBrown();
+            btnAudioBrown.classList.remove("playing");
+            btnAudioBrown.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startBrown();
+            btnAudioBrown.classList.add("playing");
+            btnAudioBrown.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioOcean.addEventListener("click", () => {
+        if (oceanNodes) {
+            stopOcean();
+            btnAudioOcean.classList.remove("playing");
+            btnAudioOcean.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startOcean();
+            btnAudioOcean.classList.add("playing");
+            btnAudioOcean.textContent = "Arrêter";
         }
     });
 
     btnAudioRain.addEventListener("click", () => {
         if (rainNodes) {
-            stopSpaceRain();
+            stopRain();
             btnAudioRain.classList.remove("playing");
             btnAudioRain.textContent = "Jouer";
         } else {
             getAudioContext();
-            startSpaceRain();
+            startRain();
             btnAudioRain.classList.add("playing");
             btnAudioRain.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioStream.addEventListener("click", () => {
+        if (streamNodes) {
+            stopStream();
+            btnAudioStream.classList.remove("playing");
+            btnAudioStream.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startStream();
+            btnAudioStream.classList.add("playing");
+            btnAudioStream.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioFire.addEventListener("click", () => {
+        if (fireNodes) {
+            stopFire();
+            btnAudioFire.classList.remove("playing");
+            btnAudioFire.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startFire();
+            btnAudioFire.classList.add("playing");
+            btnAudioFire.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioCrickets.addEventListener("click", () => {
+        if (cricketsNodes) {
+            stopCrickets();
+            btnAudioCrickets.classList.remove("playing");
+            btnAudioCrickets.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startCrickets();
+            btnAudioCrickets.classList.add("playing");
+            btnAudioCrickets.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioHeart.addEventListener("click", () => {
+        if (heartNodes) {
+            stopHeart();
+            btnAudioHeart.classList.remove("playing");
+            btnAudioHeart.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startHeart();
+            btnAudioHeart.classList.add("playing");
+            btnAudioHeart.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioDrone.addEventListener("click", () => {
+        if (droneNodes) {
+            stopDrone();
+            btnAudioDrone.classList.remove("playing");
+            btnAudioDrone.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startDrone();
+            btnAudioDrone.classList.add("playing");
+            btnAudioDrone.textContent = "Arrêter";
+        }
+    });
+
+    btnAudioViolin.addEventListener("click", () => {
+        if (violinGain) {
+            stopViolin();
+            btnAudioViolin.classList.remove("playing");
+            btnAudioViolin.textContent = "Jouer";
+        } else {
+            getAudioContext();
+            startViolin();
+            btnAudioViolin.classList.add("playing");
+            btnAudioViolin.textContent = "Arrêter";
         }
     });
 
@@ -436,160 +1098,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // --- Zen Tasks / Planner Logic (LocalStorage CRUD) ---
-
-    let tasks = [];
-
-    function loadTasks() {
-        const stored = localStorage.getItem("zenith_tasks");
-        if (stored) {
-            tasks = JSON.parse(stored);
-        } else {
-            // Seed a high quality starting task
-            tasks = [
-                { id: 1, text: "Focaliser sur ma tâche principale avec Zenith Focus", completed: false },
-                { id: 2, text: "Écouter les ondes Gamma pour la concentration", completed: true }
-            ];
-            saveTasks();
-        }
-        renderTasks();
-    }
-
-    function saveTasks() {
-        localStorage.setItem("zenith_tasks", JSON.stringify(tasks));
-    }
-
-    function renderTasks() {
-        taskListContainer.innerHTML = "";
-        
-        if (tasks.length === 0) {
-            const emptyEl = document.createElement("div");
-            emptyEl.className = "empty-state";
-            emptyEl.style.cssText = "text-align: center; color: var(--stardust-grey); font-size: 12px; padding: var(--space-medium) 0;";
-            emptyEl.textContent = "Zenitude absolue... aucune tâche programmée.";
-            taskListContainer.appendChild(emptyEl);
-            return;
-        }
-
-        tasks.forEach(task => {
-            const li = document.createElement("li");
-            li.className = `task-item ${task.completed ? 'completed' : ''}`;
-            li.setAttribute("data-id", task.id);
-
-            li.innerHTML = `
-                <div class="task-item-left">
-                    <label class="task-checkbox-wrapper">
-                        <input type="checkbox" class="task-checkbox-input" ${task.completed ? 'checked' : ''} aria-label="Marquer comme complété">
-                        <span class="task-checkmark"></span>
-                    </label>
-                    <span class="task-title">${escapeHTML(task.text)}</span>
-                </div>
-                <button class="delete-task-btn" aria-label="Supprimer la tâche">×</button>
-            `;
-
-            // Click listener for complete checkbox
-            li.querySelector(".task-checkbox-input").addEventListener("change", (e) => {
-                toggleTaskComplete(task.id, e.target.checked);
-            });
-
-            // Click listener for delete action
-            li.querySelector(".delete-task-btn").addEventListener("click", () => {
-                deleteTask(task.id, li);
-            });
-
-            taskListContainer.appendChild(li);
-        });
-    }
-
-    function addTask(text) {
-        const cleanText = text.trim();
-        if (!cleanText) return;
-
-        const newTask = {
-            id: Date.now(),
-            text: cleanText,
-            completed: false
-        };
-
-        tasks.push(newTask);
-        saveTasks();
-        renderTasks();
-
-        // Stagger load-in the newly added task using GSAP
-        const newEl = taskListContainer.querySelector(`[data-id="${newTask.id}"]`);
-        if (newEl) {
-            gsap.from(newEl, {
-                x: 30,
-                opacity: 0,
-                duration: 0.4,
-                ease: "power2.out"
-            });
-        }
-    }
-
-    function toggleTaskComplete(id, completed) {
-        tasks = tasks.map(task => {
-            if (task.id === id) {
-                return { ...task, completed };
-            }
-            return task;
-        });
-        saveTasks();
-        
-        const taskEl = taskListContainer.querySelector(`[data-id="${id}"]`);
-        if (taskEl) {
-            if (completed) {
-                taskEl.classList.add("completed");
-                // Gentle pulse animation on checkbox click
-                gsap.to(taskEl, { scale: 0.98, opacity: 0.5, duration: 0.2 });
-            } else {
-                taskEl.classList.remove("completed");
-                gsap.to(taskEl, { scale: 1, opacity: 1, duration: 0.2 });
-            }
-        }
-    }
-
-    function deleteTask(id, element) {
-        // Animate exit first with GSAP
-        gsap.to(element, {
-            x: -40,
-            opacity: 0,
-            duration: 0.35,
-            ease: "power2.in",
-            onComplete: () => {
-                tasks = tasks.filter(task => task.id !== id);
-                saveTasks();
-                renderTasks();
-            }
-        });
-    }
-
-    function escapeHTML(str) {
-        return str
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    // --- Form Listener ---
-    formAddTask.addEventListener("submit", (e) => {
-        e.preventDefault();
-        addTask(inputTask.value);
-        inputTask.value = "";
-    });
-
-    // --- Timer Button Listeners ---
-    btnTimerToggle.addEventListener("click", toggleTimer);
-    btnTimerReset.addEventListener("click", resetTimer);
-
-    btnModeFocus.addEventListener("click", () => setMode("focus"));
-    btnModeBreak.addEventListener("click", () => setMode("break"));
-
     // --- Initialization ---
-
-    
     updateTimerDisplay();
-    loadTasks();
 });

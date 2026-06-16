@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Zenith Focus - Dashboard de concentration minimaliste cyber-zen. Organisez vos tâches et boostez votre focus avec des battements binauraux et un minuteur fluide.">
-    <title>Zenith Focus — Productivité Cyber-Zen</title>
+    <meta name="description" content="FocusMood - Améliorez votre concentration et facilitez votre méditation grâce aux ondes Alpha, Theta, au bruit brun, rose, au crépitement du feu, aux vagues et au violon calme.">
+    <title>FocusMood - Concentration et Relaxation</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,8 +14,8 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- Favicon (Fallback emoji) -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧘</text></svg>">
+    <!-- Favicon (Pure SVG icon, no emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%23ff5b8f%22 /></svg>">
 </head>
 <body>
     
@@ -29,11 +29,12 @@
             <div class="logo-group">
                 <span class="logo-icon" aria-hidden="true">
                     <svg class="logo-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2L2 22h20L12 2z" />
-                        <path d="M12 9l-6 10h12L12 9z" opacity="0.65" />
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        <path d="M2 12h20" />
                     </svg>
                 </span>
-                <h1 class="logo-text">ZENITH <span class="logo-sub">FOCUS</span></h1>
+                <h1 class="logo-text">Focus<span class="logo-sub">Mood</span></h1>
             </div>
         </header>
 
@@ -42,13 +43,8 @@
             
             <!-- LEFT COLUMN: FOCUS TIMER -->
             <section class="card timer-card" aria-labelledby="timer-heading">
-                <h2 id="timer-heading" class="sr-only">Miniteur Pomodoro</h2>
+                <h2 id="timer-heading" class="sr-only">Minuteur de concentration</h2>
                 
-                <div class="timer-mode-switcher">
-                    <button id="btn-mode-focus" class="mode-btn active" aria-current="true">Concentration</button>
-                    <button id="btn-mode-break" class="mode-btn">Pause</button>
-                </div>
-
                 <div class="timer-visual-container">
                     <!-- SVG Progress Circle -->
                     <svg class="progress-ring" width="280" height="280" viewBox="0 0 280 280">
@@ -57,52 +53,135 @@
                     </svg>
                     
                     <div class="timer-display">
-                        <span id="time-digits" class="time-text">25:00</span>
-                        <span id="time-state-label" class="time-sub">FOCUS</span>
+                        <span id="time-digits" class="time-text">30:00</span>
+                        <span id="time-state-label" class="time-sub">Concentration</span>
+                    </div>
+                </div>
+
+                <!-- Duration presets -->
+                <div class="duration-section">
+                    <h3 class="section-subtitle">Durée (minutes)</h3>
+                    <div class="presets-grid">
+                        <button type="button" class="preset-btn" data-minutes="5">5</button>
+                        <button type="button" class="preset-btn" data-minutes="15">15</button>
+                        <button type="button" class="preset-btn active" data-minutes="30">30</button>
+                        <button type="button" class="preset-btn" data-minutes="45">45</button>
+                        <button type="button" class="preset-btn" data-minutes="60">60</button>
+                        <button type="button" class="preset-btn" data-minutes="90">90</button>
+                    </div>
+                    <div class="custom-duration-wrapper">
+                        <label for="input-custom-minutes" class="custom-duration-label">Personnalisé :</label>
+                        <input type="number" id="input-custom-minutes" min="1" max="720" placeholder="Ex: 25" class="custom-minutes-input">
+                        <span class="custom-minutes-unit">min</span>
                     </div>
                 </div>
 
                 <div class="timer-controls">
-                    <button id="btn-timer-toggle" class="control-btn btn-primary" aria-label="Démarrer le minuteur">
-                        <span class="btn-icon">▶</span> <span class="btn-text">DÉMARRER</span>
+                    <button type="button" id="btn-timer-toggle" class="control-btn btn-primary" aria-label="Démarrer le minuteur">
+                        <span class="btn-icon">▶</span> <span class="btn-text">Démarrer</span>
                     </button>
-                    <button id="btn-timer-reset" class="control-btn btn-secondary" aria-label="Réinitialiser le minuteur">
+                    <button type="button" id="btn-timer-reset" class="control-btn btn-secondary" aria-label="Réinitialiser le minuteur">
                         Réinitialiser
                     </button>
                 </div>
             </section>
 
-            <!-- RIGHT COLUMN (TOP): AUDIO GENERATOR -->
+            <!-- RIGHT COLUMN: AUDIO GENERATOR -->
             <section class="card audio-card" aria-labelledby="audio-heading">
                 <header class="card-header">
-                    <h2 id="audio-heading" class="card-title">Générateur d'Ambiance</h2>
-                    <span class="card-subtitle">Battements binauraux pures</span>
+                    <h2 id="audio-heading" class="card-title">Générateur d'ambiance</h2>
+                    <span class="card-subtitle">Sons de relaxation et concentration</span>
                 </header>
 
                 <div class="audio-tracks-grid">
-                    <!-- Binaural Focus Track -->
+                    <!-- Ondes Alpha -->
                     <div class="audio-track-item">
                         <div class="track-info">
                             <span class="track-icon">
-                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--color-primary); filter: drop-shadow(0 0 4px var(--color-primary-glow));">
-                                    <path d="M12 4.5a2.5 2.5 0 0 0-2.5-2.5C7.3 2 5.5 3.8 5.5 6a3 3 0 0 0 .5 1.5c-2 .5-3.5 2.3-3.5 4.5a4 4 0 0 0 1 2.6c-1.5 1-2 3-1 4.7 1 1.7 3 2.2 4.5 1.7.5 1.5 2 2.5 3.5 2.5a2.5 2.5 0 0 0 2.5-2.5V4.5z" />
-                                    <path d="M12 4.5a2.5 2.5 0 0 1 2.5-2.5c2.2 0 4 1.8 4 4a3 3 0 0 1-.5 1.5c2 .5 3.5 2.3 3.5 4.5a4 4 0 0 1-1 2.6c1.5 1 2 3 1 4.7-1 1.7-3 2.2-4.5 1.7-.5 1.5-2 2.5-3.5 2.5a2.5 2.5 0 0 1-2.5-2.5V4.5z" />
-                                    <path d="M8 8a2 2 0 0 1 2 2M16 8a2 2 0 0 0-2 2M7.5 13.5a2.5 2.5 0 0 1 2.5-2.5M16.5 13.5a2.5 2.5 0 0 0-2.5-2.5" />
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-primary); filter: drop-shadow(0 0 4px var(--color-primary-glow));">
+                                    <circle cx="12" cy="12" r="3" />
+                                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
                                 </svg>
                             </span>
                             <div class="track-details">
-                                <span class="track-name">Ondes Gamma</span>
-                                <span class="track-desc">Concentration cognitive</span>
+                                <span class="track-name">Ondes Alpha</span>
+                                <span class="track-desc">Calme cognitif</span>
                             </div>
                         </div>
-                        <button id="btn-audio-gamma" class="audio-toggle-btn" aria-label="Jouer Ondes Gamma">Jouer</button>
+                        <button type="button" id="btn-audio-alpha" class="audio-toggle-btn" aria-label="Jouer Ondes Alpha">Jouer</button>
                     </div>
 
-                    <!-- Ambient Space Rain Track -->
+                    <!-- Ondes Theta -->
                     <div class="audio-track-item">
                         <div class="track-info">
                             <span class="track-icon">
-                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-primary); filter: drop-shadow(0 0 4px var(--color-primary-glow));">
+                                    <path d="M12 3a9 9 0 1 0 9 9 9.75 9.75 0 0 0-.5-3 4.5 4.5 0 0 1-4.5-4.5 9.75 9.75 0 0 0-3-.5Z" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Ondes Theta</span>
+                                <span class="track-desc">Méditation pure</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-theta" class="audio-toggle-btn" aria-label="Jouer Ondes Theta">Jouer</button>
+                    </div>
+
+                    <!-- Bruit Rose -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M17.5 19a3.5 3.5 0 1 1-3.5-3.5c.3 0 .6.03.9.1a4.5 4.5 0 1 1 8.1 4c-.2.5-.7.9-1.3.9h-4.2Z" opacity="0.8" />
+                                    <path d="M4.5 12a3.5 3.5 0 1 1 3.5-3.5c.3 0 .6.03.9.1a4.5 4.5 0 1 1 8.1 4c-.2.5-.7.9-1.3.9H9.3" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Bruit Rose</span>
+                                <span class="track-desc">Concentration</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-pink" class="audio-toggle-btn" aria-label="Jouer Bruit Rose">Jouer</button>
+                    </div>
+
+                    <!-- Bruit Brun -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+                                    <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Bruit Brun</span>
+                                <span class="track-desc">Anti-distraction</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-brown" class="audio-toggle-btn" aria-label="Jouer Bruit Brun">Jouer</button>
+                    </div>
+
+                    <!-- Vagues de l'Océan -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.5 0 2.5 2 5 2 1.3 0 1.9-.5 2.5-1M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2s2.5 2 5 2c1.3 0 1.9-.5 2.5-1M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2s2.5 2 5 2c1.3 0 1.9-.5 2.5-1" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Vagues</span>
+                                <span class="track-desc">Respiration</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-ocean" class="audio-toggle-btn" aria-label="Jouer Vagues de l'Océan">Jouer</button>
+                    </div>
+
+                    <!-- La Pluie -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
                                     <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
                                     <line x1="8" y1="19" x2="6" y2="22" />
                                     <line x1="12" y1="19" x2="10" y2="22" />
@@ -110,48 +189,131 @@
                                 </svg>
                             </span>
                             <div class="track-details">
-                                <span class="track-name">Space Rain</span>
-                                <span class="track-desc">Bruit rose modulé</span>
+                                <span class="track-name">Pluie</span>
+                                <span class="track-desc">Calme intérieur</span>
                             </div>
                         </div>
-                        <button id="btn-audio-rain" class="audio-toggle-btn" aria-label="Jouer Space Rain">Jouer</button>
+                        <button type="button" id="btn-audio-rain" class="audio-toggle-btn" aria-label="Jouer Pluie">Jouer</button>
+                    </div>
+
+                    <!-- Ruisseau en Forêt -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M8 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                                    <path d="M2 12h12" />
+                                    <path d="M18 6h2M16 18h4M14 12h8" opacity="0.6" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Ruisseau</span>
+                                <span class="track-desc">Fraîcheur zen</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-stream" class="audio-toggle-btn" aria-label="Jouer Ruisseau en Forêt">Jouer</button>
+                    </div>
+
+                    <!-- Crépitement du Feu -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Feu de camp</span>
+                                <span class="track-desc">Chaleur réconfortante</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-fire" class="audio-toggle-btn" aria-label="Jouer Crépitement du Feu">Jouer</button>
+                    </div>
+
+                    <!-- Sons Nocturnes (Grillons) -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" opacity="0.3" />
+                                    <path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Grillons</span>
+                                <span class="track-desc">Nuit paisible</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-crickets" class="audio-toggle-btn" aria-label="Jouer Sons Nocturnes">Jouer</button>
+                    </div>
+
+                    <!-- Battement de Cœur -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Cœur</span>
+                                <span class="track-desc">Ancrage & sécurité</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-heart" class="audio-toggle-btn" aria-label="Jouer Battement de Cœur">Jouer</button>
+                    </div>
+
+                    <!-- Drone Zen -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                                    <path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12z" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Drone Zen</span>
+                                <span class="track-desc">Onde harmonique</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-drone" class="audio-toggle-btn" aria-label="Jouer Drone Zen">Jouer</button>
+                    </div>
+
+                    <!-- Violon Calme -->
+                    <div class="audio-track-item">
+                        <div class="track-info">
+                            <span class="track-icon">
+                                <svg class="track-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-secondary); filter: drop-shadow(0 0 4px var(--color-secondary-glow));">
+                                    <path d="M9 18V5l12-2v13" />
+                                    <circle cx="6" cy="18" r="3" />
+                                    <circle cx="18" cy="16" r="3" />
+                                </svg>
+                            </span>
+                            <div class="track-details">
+                                <span class="track-name">Violon</span>
+                                <span class="track-desc">Mélodie douce</span>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-audio-violin" class="audio-toggle-btn" aria-label="Jouer Violon Calme">Jouer</button>
                     </div>
                 </div>
 
                 <!-- Global Volume -->
                 <div class="volume-control-wrapper">
                     <label for="slider-volume" class="volume-label">
-                        <span>Volume</span>
+                        <span>Volume global</span>
                         <span id="volume-val-display">50%</span>
                     </label>
-                    <input type="range" id="slider-volume" min="0" max="100" value="50" class="volume-slider" aria-label="Contrôle du volume de l'ambiance">
+                    <input type="range" id="slider-volume" min="0" max="100" value="50" class="volume-slider" aria-label="Contrôle du volume global">
                 </div>
-            </section>
-
-            <!-- RIGHT COLUMN (BOTTOM): TASK LIST -->
-            <section class="card tasks-card" aria-labelledby="tasks-heading">
-                <header class="card-header">
-                    <h2 id="tasks-heading" class="card-title">Zen Planner</h2>
-                    <span class="card-subtitle">Tâches prioritaires de la session</span>
-                </header>
-
-                <!-- Task Add Form -->
-                <form id="form-add-task" class="add-task-form" aria-label="Ajouter une tâche">
-                    <input type="text" id="input-task" placeholder="Définir un nouvel objectif..." required aria-label="Libellé de la nouvelle tâche" autocomplete="off">
-                    <button type="submit" class="add-btn" aria-label="Créer la tâche">＋</button>
-                </form>
-
-                <!-- Task List Container -->
-                <ul id="task-list-container" class="task-list" aria-label="Liste des tâches de concentration">
-                    <!-- Tasks will be injected dynamically -->
-                </ul>
             </section>
 
         </main>
         
         <!-- FOOTER -->
         <footer class="app-footer">
-            <p class="footer-text">Zenith Focus — Esthétique Premium par Antigravity.</p>
+            <p class="footer-text">FocusMood - Concentration calme et relaxation.</p>
         </footer>
     </div>
 
